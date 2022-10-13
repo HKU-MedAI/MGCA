@@ -22,3 +22,5 @@ CUDA_VISIBLE_DEVICES=0,1 python mgcm_module.py --gpus 2 --strategy ddp
 cd mgca/models/mgcm
 CUDA_VISIBLE_DEVICES=1 python mgcm_finetuner.py --gpus 1 --dataset chexpert --data_pct 0.01
 ```
+
+More downstream tasks and pre-trained model will come soon!
