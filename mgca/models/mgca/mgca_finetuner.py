@@ -72,7 +72,7 @@ def cli_main():
         model = MGCA()
 
     args.model_name = model.hparams.img_encoder
-    args.backbone = model.img_encoder
+    args.backbone = model.img_encoder_q
     args.in_features = args.backbone.feature_dim
     args.num_classes = num_classes
     args.multilabel = multilabel
