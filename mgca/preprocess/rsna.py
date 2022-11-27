@@ -1,5 +1,4 @@
 import pickle
-
 import numpy as np
 import pandas as pd
 from mgca.constants import *
@@ -127,6 +126,7 @@ def prepare_detection_data():
     prepare_detection_pkl(test_df, RSNA_DETECTION_TEST_PKL)
 
 
+
 if __name__ == "__main__":
-    preprocess_rsna_data()
+    # preprocess_rsna_data()
     prepare_detection_data()

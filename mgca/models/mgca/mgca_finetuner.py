@@ -1,22 +1,21 @@
-import os
-import torch
-from argparse import ArgumentParser
-from dateutil import tz
 import datetime
-from pytorch_lightning import seed_everything, Trainer
-from pytorch_lightning.loggers import WandbLogger
-from pytorch_lightning.callbacks import (
-    EarlyStopping,
-    LearningRateMonitor,
-    ModelCheckpoint,
-    StochasticWeightAveraging
-)
-from mgca.datasets.data_module import DataModule
-from mgca.datasets.classification_dataset import CheXpertImageDataset, RSNAImageDataset, COVIDXImageDataset
-from mgca.datasets.transforms import DataTransforms, Moco2Transform
-from mgca.models.ssl_finetuner import SSLFineTuner
-from mgca.models.mgca.mgca_module import MGCA
+import os
+from argparse import ArgumentParser
 
+import torch
+from dateutil import tz
+from pytorch_lightning import Trainer, seed_everything
+from pytorch_lightning.callbacks import (EarlyStopping, LearningRateMonitor,
+                                         ModelCheckpoint)
+from pytorch_lightning.loggers import WandbLogger
+
+from mgca.datasets.classification_dataset import (CheXpertImageDataset,
+                                                  COVIDXImageDataset,
+                                                  RSNAImageDataset)
+from mgca.datasets.data_module import DataModule
+from mgca.datasets.transforms import DataTransforms, Moco2Transform
+from mgca.models.mgca.mgca_module import MGCA
+from mgca.models.ssl_finetuner import SSLFineTuner
 
 torch.autograd.set_detect_anomaly(True)
 torch.backends.cudnn.deterministic = True
@@ -28,7 +27,7 @@ def cli_main():
     parser = ArgumentParser()
     parser.add_argument("--dataset", type=str, default="chexpert")
     parser.add_argument("--path", type=str,
-                        default="")
+                        default="/home/r15user2/Documents/MGCA/checkpoints/mgca/epoch=20-step=33137.ckpt")
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--batch_size", type=int, default=48)
     parser.add_argument("--num_workers", type=int, default=16)
@@ -64,7 +63,6 @@ def cli_main():
         multilabel = False
     else:
         raise RuntimeError(f"no dataset called {args.dataset}")
-
 
     if args.path:
         model = MGCA.load_from_checkpoint(args.path, strict=False)
@@ -102,8 +100,8 @@ def cli_main():
         BASE_DIR, f"../../../data/wandb")
     os.makedirs(logger_dir, exist_ok=True)
     wandb_logger = WandbLogger(
-        project="mgca_finetune", 
-        save_dir=logger_dir, 
+        project="mgca_finetune",
+        save_dir=logger_dir,
         name=f"{args.dataset}_{args.data_pct}_{extension}")
     trainer = Trainer.from_argparse_args(
         args,

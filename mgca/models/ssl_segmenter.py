@@ -1,13 +1,10 @@
-from ast import excepthandler
 import os
 
-import ipdb
 import numpy as np
 import torch
 import torch.nn as nn
-import wandb
 from mgca.utils.segmentation_loss import MixedLoss
-from pytorch_lightning import LightningModule, seed_everything
+from pytorch_lightning import LightningModule
 
 torch.autograd.set_detect_anomaly(True)
 torch.backends.cudnn.deterministic = True
@@ -24,7 +21,7 @@ class SSLSegmenter(LightningModule):
                  **kwargs
                  ):
         super().__init__()
-        self.save_hyperparameters()
+        self.save_hyperparameters(ignore=['seg_model'])
         self.model = seg_model
         self.loss = MixedLoss(alpha=10)
 
@@ -89,12 +86,6 @@ class SSLSegmenter(LightningModule):
 
         self.log(f"{split}_dice", dice, on_epoch=True,
                  logger=True, prog_bar=True)
-
-        # if split == "test":
-        #     results_csv = os.path.join(self.cfg.output_dir, "results.csv")
-        #     results = {"loss": loss, "dice": dice}
-        #     with open(results_csv, "w") as fp:
-        #         json.dump(results, fp)
 
     def training_epoch_end(self, training_step_outputs):
         return self.shared_epoch_end(training_step_outputs, "train")

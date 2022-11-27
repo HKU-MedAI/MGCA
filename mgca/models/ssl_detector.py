@@ -1,6 +1,5 @@
 from typing import List
 import torch
-import numpy as np
 import torch.nn as nn
 from collections import OrderedDict
 from mgca.utils.yolo_loss import YOLOLoss
@@ -8,9 +7,8 @@ from mgca.datasets.data_module import DataModule
 from mgca.datasets.transforms import DataTransforms
 from mgca.datasets.detection_dataset import RSNADetectionDataset
 from torchmetrics.detection.mean_ap import MeanAveragePrecision
-from mgca.utils.detection_utils import non_max_suppression, get_batch_statistics, ap_per_class
+from mgca.utils.detection_utils import non_max_suppression
 from pytorch_lightning import LightningModule
-import ipdb
 
 
 class SSLDetector(LightningModule):
@@ -26,7 +24,7 @@ class SSLDetector(LightningModule):
                  *args,
                  **kwargs):
         super().__init__()
-        self.save_hyperparameters()
+        self.save_hyperparameters(ignore=['img_encoder'])
         self.model = ModelMain(img_encoder)
         self.yolo_losses = []
         for i in range(3):
@@ -94,11 +92,7 @@ class SSLDetector(LightningModule):
                         scores=out[:, 4],
                         labels=out[:, 6]
                     )
-                    # sample_pred = dict(
-                    #     boxes=filtered_target[:, 1:],
-                    #     scores=torch.ones([filtered_target.shape[0]]).type_as(filtered_target),
-                    #     labels=filtered_target[:, 0]
-                    # )
+
                     sample_preds.append(sample_pred)
 
             if split == "val":
@@ -116,24 +110,6 @@ class SSLDetector(LightningModule):
 
     def test_step(self, batch, batch_idx):
         return self.shared_step(batch, batch_idx, "test")
-
-        # sample_metrics = []
-        # labels = []
-        # for x in step_outputs:
-        #     sample_metrics += x["sample_metrics"]
-        #     labels += x["labels"]
-        # true_positives, pred_scores, pred_labels = [
-        #     np.concatenate(x, 0) for x in list(zip(*sample_metrics))]
-        # metrics_output = ap_per_class(
-        #     true_positives, pred_scores, pred_labels, labels)
-        # precision, recall, AP, f1, ap_class = metrics_output
-        # mAP = AP.mean()
-
-        # self.log(f"{split}_mAP", mAP, prog_bar=True,
-        #          on_epoch=True, sync_dist=True)
-
-    # def training_epoch_end(self, training_step_outputs):
-    #     return self.shared_epoch_end(training_step_outputs, "train")
 
     def validation_epoch_end(self, validation_step_outputs):
         map = self.val_map.compute()["map"]
@@ -156,15 +132,6 @@ class SSLDetector(LightningModule):
         )
 
         return optimizer
-
-        # lr_scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode="min", factor=0.5)
-        # scheduler = {
-        #     "scheduler": lr_scheduler,
-        #     "interval": "step",
-        #     "monitor": "train_loss"
-        # }
-
-        # return {"optimizer": optimizer, "lr_scheduler": scheduler}
 
     @staticmethod
     def num_training_steps(trainer, dm) -> int:

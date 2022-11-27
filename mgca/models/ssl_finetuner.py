@@ -141,9 +141,6 @@ class SSLFineTuner(LightningModule):
         """Total training steps inferred from datamodule and devices."""
         dataset = dm.train_dataloader()
         dataset_size = len(dataset)
-        # num_devices = max(1, trainer.num_gpus, trainer.num_processes)
-        # if trainer.tpu_cores:
-        #     num_devices = max(num_devices, trainer.tpu_cores)
         effective_batch_size = trainer.accumulate_grad_batches * trainer.num_devices
 
         return (dataset_size // effective_batch_size) * trainer.max_epochs
