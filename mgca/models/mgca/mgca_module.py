@@ -361,13 +361,13 @@ class MGCA(LightningModule):
                       sync_dist=True, prog_bar=True)
         return loss
 
-    def on_train_epoch_end(self):
-        ''' Save img_queue and report_queue for visualization '''
-        if self.local_rank == 0:
-            img_queue_path = f"{self.trainer.callbacks[-1].dirpath}/img_queue.pth"
-            torch.save(self.img_queue, img_queue_path)
-            report_queue_path = f"{self.trainer.callbacks[-1].dirpath}/report_queue.pth"
-            torch.save(self.report_queue, report_queue_path)
+    # def on_train_epoch_end(self):
+    #     ''' Save img_queue and report_queue for visualization '''
+    #     if self.local_rank == 0:
+    #         img_queue_path = f"{self.trainer.callbacks[-1].dirpath}/img_queue.pth"
+    #         torch.save(self.img_queue, img_queue_path)
+    #         report_queue_path = f"{self.trainer.callbacks[-1].dirpath}/report_queue.pth"
+    #         torch.save(self.report_queue, report_queue_path)
 
     @staticmethod
     def precision_at_k(output: torch.Tensor, target: torch.Tensor, top_k=(1,)):

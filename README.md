@@ -12,15 +12,15 @@ pip install -r requirments.txt
 ### Training
 
 ```
-cd mgca/models/mgcm
-CUDA_VISIBLE_DEVICES=0,1 python mgcm_module.py --gpus 2 --strategy ddp
+cd mgca/models/mgca
+CUDA_VISIBLE_DEVICES=0,1 python mgca_module.py --gpus 2 --strategy ddp
 ```
 
 ### Finetune
 
 ```
-cd mgca/models/mgcm
-CUDA_VISIBLE_DEVICES=1 python mgcm_finetuner.py --gpus 1 --dataset chexpert --data_pct 0.01
+cd mgca/models/mgca
+CUDA_VISIBLE_DEVICES=1 python mgca_finetuner.py --gpus 1 --dataset chexpert --data_pct 0.01
 ```
 
 More downstream tasks and pre-trained model will come soon!
