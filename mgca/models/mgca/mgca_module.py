@@ -16,7 +16,7 @@ from pytorch_lightning.loggers import WandbLogger
 from pytorch_lightning.plugins import DDP2Plugin, DDPPlugin
 from mgca.datasets.data_module import DataModule
 from mgca.datasets.pretrain_dataset import (MultimodalPretrainingDataset,
-                                             multimodal_collate_fn)
+                                            multimodal_collate_fn)
 from mgca.datasets.transforms import DataTransforms
 from mgca.models.backbones.encoder import BertEncoder, ImageEncoder
 from torch import distributed as dist
@@ -430,6 +430,7 @@ class MGCA(LightningModule):
         parser.add_argument("--lambda_3", type=float, default=1.)
         parser.add_argument("--seed", type=int, default=42)
         parser.add_argument("--bidirectional", action="store_false")
+        parser.add_argument("--data_pct", type=float, default=1.)
         return parser
 
     @staticmethod
@@ -479,7 +480,7 @@ def cli_main():
     seed_everything(args.seed)
 
     datamodule = DataModule(MultimodalPretrainingDataset, multimodal_collate_fn,
-                            DataTransforms, 1.,
+                            DataTransforms, args.data_pct,
                             args.batch_size, args.num_workers)
 
     # Add load from checkpoint
@@ -512,9 +513,8 @@ def cli_main():
     print(model.training_steps)
     trainer.fit(model, datamodule=datamodule)
 
-    # FIXME
-    # best_ckpt_path = os.path.join(ckpt_dir, "best_ckpts.yaml")
-    # model.checkpoint_callback.to_yaml(filepath=best_ckpt_path)
+    best_ckpt_path = os.path.join(ckpt_dir, "best_ckpts.yaml")
+    callbacks[1].to_yaml(filepath=best_ckpt_path)
 
 
 if __name__ == "__main__":
