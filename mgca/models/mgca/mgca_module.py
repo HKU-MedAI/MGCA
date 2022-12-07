@@ -513,8 +513,8 @@ def cli_main():
     trainer.fit(model, datamodule=datamodule)
 
     # FIXME
-    best_ckpt_path = os.path.join(ckpt_dir, "best_ckpts.yaml")
-    model.checkpoint_callback.to_yaml(filepath=best_ckpt_path)
+    # best_ckpt_path = os.path.join(ckpt_dir, "best_ckpts.yaml")
+    # model.checkpoint_callback.to_yaml(filepath=best_ckpt_path)
 
 
 if __name__ == "__main__":
