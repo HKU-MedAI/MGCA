@@ -1,4 +1,5 @@
 albumentations==0.5.2
+cosine-annealing-warmup @ git+https://github.com/katsura-jp/pytorch-cosine-annealing-with-warmup@12d03c07553aedd3d9e9155e2b3e31ce8c64081a
 einops==0.3.2
 huggingface-hub==0.2.1
 imageio==2.9.0
@@ -29,3 +30,4 @@ torchmetrics==0.8.2
 tqdm==4.56.0
 transformers==4.18.0
 wandb==0.12.17
+fairscale
