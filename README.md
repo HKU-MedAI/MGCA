@@ -36,6 +36,9 @@ After downloading datasets, please check if the path in `mgca/constants.py` is c
 We preprocessed these datasets and split the dataset into train/val/test set using the code in `mgca/preprocess`.
 
 ### Pre-training
+
+**Reminder**: Please check Line 47 of `mgca/datasets/pretrain_dataset.py` and make sure the path is correct.
+
 We pre-trained MGCA on MIMIC-CXR using this command:
 ```
 cd mgca/models/mgca
