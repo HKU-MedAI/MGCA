@@ -37,7 +37,7 @@ We preprocessed these datasets and split the dataset into train/val/test set usi
 
 ### Pre-training
 
-**Reminder**: Please check Line 47 of `mgca/datasets/pretrain_dataset.py` and make sure the path is correct.
+**Reminder**: Please check Line 47 of `mgca/datasets/pretrain_dataset.py`, Line 503 of `mgca_module.py` and make sure the path is correct.
 
 We pre-trained MGCA on MIMIC-CXR using this command:
 ```
